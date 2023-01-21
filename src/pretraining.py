@@ -1,7 +1,13 @@
 from datetime import datetime
+import argparse 
 from datasets import load_from_disk
 from transformers import (AutoTokenizer, AlbertForPreTraining, DefaultDataCollator, AutoConfig, TrainingArguments, Trainer, DataCollatorForLanguageModeling,
 AlbertForMaskedLM)
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--batch', type=int, required=True)
+parser.add_argument('--epochs', type=int, required=True)
+args = parser.parse_args()
 
 def tokenize_function(example):
     '''
@@ -37,11 +43,11 @@ hora = datetime.now().strftime("%H-%M")
 training_args = TrainingArguments(
     output_dir=f'../checkpoints/pretraining/meu_output_dia_{dia}_hora_{hora}',
     overwrite_output_dir=True,
-    per_device_train_batch_size=1,
+    per_device_train_batch_size=args.batch,
     learning_rate=1e-5,
     logging_strategy='epoch',
     save_strategy='epoch',
-    num_train_epochs = 2
+    num_train_epochs = args.epochs
 )
 
 trainer = Trainer(
