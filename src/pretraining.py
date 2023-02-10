@@ -108,20 +108,16 @@ dia = datetime.today().strftime("%Y-%M-%d")
 hora = datetime.now().strftime("%H-%M")
 
 training_args = TrainingArguments(
-    output_dir=f'../checkpoints/pretraining/meu_output_dia_{dia}_hora_{hora}',
+    output_dir=f'../checkpoints/pretraining/{dia}_{hora}',
     overwrite_output_dir=True,
     per_device_train_batch_size=args.batch,
     per_device_eval_batch_size=args.batch,
-    #num_train_epochs=args.epochs,
-    max_steps=100,
+    num_train_epochs=args.epochs,
     learning_rate=1e-5,
     report_to='wandb',
-    evaluation_strategy='steps',
-    logging_strategy='steps',
-    save_strategy='steps',
-    save_steps = 10_000,
-    eval_steps=10,
-    logging_steps=10
+    evaluation_strategy='epoch',
+    logging_strategy='epoch',
+    save_strategy='epoch' #Strategy for saving checkpoints
 )
 
 trainer = Trainer(
@@ -130,6 +126,7 @@ trainer = Trainer(
     data_collator=data_collator,
     train_dataset=tokenized_dataset['train'],
     eval_dataset=tokenized_dataset['val']
+    #compute_metrics=compute_perplexity
 )
 
 trainer.train()
