@@ -10,11 +10,14 @@ from transformers import AutoTokenizer
 def createTokenizer():
     dataset = load_from_disk('../data/datasets/cuneiform')
 
-    #loading an existing tokenizer and training a new tokenizer from the old one
+    #Loading an existing tokenizer and training a new tokenizer from the
+    #old one
     tokenizer = AutoTokenizer.from_pretrained('albert-large-v2')
-    tokenizer = tokenizer.train_new_from_iterator(dataset['train']['text'] + dataset['val']['text'] + dataset['test']['text'], vocab_size = 10_000)
+    
+    tokenizer = tokenizer.train_new_from_iterator(
+        dataset['train']['text'] + dataset['val']['text'], vocab_size = 10_000)
 
-    #saving the tokenizer for later use
+    #Saving the tokenizer for later use
     tokenizer.save_pretrained("../tokenizers/tokenizer")
     print("Tokenizer created successfully!")
 
